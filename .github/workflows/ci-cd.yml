@@ -95,7 +95,7 @@ jobs:
 
     - name: Install dependencies (Windows)
       if: runner.os == 'Windows'
-      # Install CMake, Ninja, and Visual Studio Build Tools on Windows  
+      # Install CMake, Ninja, and Visual Studio Build Tools on Windows
       run: |
         choco install cmake ninja
         choco install visualstudio2022buildtools

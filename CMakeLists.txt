@@ -4,7 +4,10 @@ cmake_minimum_required(VERSION 3.21...3.27)
 include(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
 
 # Define the project name and version
-project(OpticLibrary VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(
+  OpticLibrary
+  VERSION ${PROJECT_VERSION}
+  LANGUAGES CXX)
 
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 23)
@@ -18,36 +21,34 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
   # Set default build type if not specified
   if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build" FORCE)
+    set(CMAKE_BUILD_TYPE
+        "Release"
+        CACHE STRING "Choose the type of build" FORCE)
   endif()
-  
   # Add Coverage build type
   set(CMAKE_CXX_FLAGS_COVERAGE
-    "-g -O0 --coverage -fprofile-arcs -ftest-coverage"
-    CACHE STRING "Flags used by the C++ compiler during coverage builds."
-    FORCE)
+      "-g -O0 --coverage -fprofile-arcs -ftest-coverage"
+      CACHE STRING "Flags used by the C++ compiler during coverage builds."
+            FORCE)
   set(CMAKE_C_FLAGS_COVERAGE
-    "-g -O0 --coverage -fprofile-arcs -ftest-coverage"
-    CACHE STRING "Flags used by the C compiler during coverage builds."
-    FORCE)
+      "-g -O0 --coverage -fprofile-arcs -ftest-coverage"
+      CACHE STRING "Flags used by the C compiler during coverage builds." FORCE)
   set(CMAKE_EXE_LINKER_FLAGS_COVERAGE
-    "--coverage"
-    CACHE STRING "Flags used for linking binaries during coverage builds."
-    FORCE)
+      "--coverage"
+      CACHE STRING "Flags used for linking binaries during coverage builds."
+            FORCE)
   set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE
-    "--coverage"
-    CACHE STRING "Flags used by the shared libraries linker during coverage builds."
-    FORCE)
+      "--coverage"
+      CACHE STRING
+            "Flags used by the shared libraries linker during coverage builds."
+            FORCE)
   mark_as_advanced(
-    CMAKE_CXX_FLAGS_COVERAGE
-    CMAKE_C_FLAGS_COVERAGE
-    CMAKE_EXE_LINKER_FLAGS_COVERAGE
-    CMAKE_SHARED_LINKER_FLAGS_COVERAGE)
+    CMAKE_CXX_FLAGS_COVERAGE CMAKE_C_FLAGS_COVERAGE
+    CMAKE_EXE_LINKER_FLAGS_COVERAGE CMAKE_SHARED_LINKER_FLAGS_COVERAGE)
 
   # Options for building tests and benchmarks
   option(BUILD_TESTS "Build the tests" ON)
   option(BUILD_BENCHMARKS "Build the benchmarks" ON)
-  
   # Enable testing
   if(BUILD_TESTS)
     enable_testing()
@@ -62,7 +63,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
   # Sanitizer options
   option(ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
-  option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "Enable undefined behavior sanitizer" OFF)
+  option(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR
+         "Enable undefined behavior sanitizer" OFF)
 endif()
 
 # Option for building shared or static libraries
@@ -83,8 +85,7 @@ if(NOT GTest_FOUND)
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG v1.15.2
-  )
+    GIT_TAG v1.15.2)
   FetchContent_MakeAvailable(googletest)
 endif()
 
@@ -96,8 +97,7 @@ if(BUILD_BENCHMARKS)
     FetchContent_Declare(
       benchmark
       GIT_REPOSITORY https://github.com/google/benchmark.git
-      GIT_TAG v1.8.5
-    )
+      GIT_TAG v1.8.5)
     FetchContent_MakeAvailable(benchmark)
   endif()
 endif()
@@ -112,12 +112,16 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   if(ENABLE_SANITIZER_ADDRESS OR ENABLE_SANITIZER_UNDEFINED_BEHAVIOR)
     add_library(sanitizer_options INTERFACE)
     if(ENABLE_SANITIZER_ADDRESS)
-      target_compile_options(sanitizer_options INTERFACE $<$<CONFIG:Debug>:-fsanitize=address>)
-      target_link_options(sanitizer_options INTERFACE $<$<CONFIG:Debug>:-fsanitize=address>)
+      target_compile_options(sanitizer_options
+                             INTERFACE $<$<CONFIG:Debug>:-fsanitize=address>)
+      target_link_options(sanitizer_options INTERFACE
+                          $<$<CONFIG:Debug>:-fsanitize=address>)
     endif()
     if(ENABLE_SANITIZER_UNDEFINED_BEHAVIOR)
-      target_compile_options(sanitizer_options INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined>)
-      target_link_options(sanitizer_options INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined>)
+      target_compile_options(sanitizer_options
+                             INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined>)
+      target_link_options(sanitizer_options INTERFACE
+                          $<$<CONFIG:Debug>:-fsanitize=undefined>)
     endif()
   endif()
 
@@ -131,53 +135,47 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # Ensure the output directory exists
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs/api)
 
-    add_custom_target(doc_doxygen ALL
+    add_custom_target(
+      doc_doxygen ALL
       COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Generating API documentation with Doxygen"
       VERBATIM)
-    else()
-      message(STATUS "Doxygen not found. API documentation will not be generated.")
-    endif()
-  
+  else()
+    message(
+      STATUS "Doxygen not found. API documentation will not be generated.")
+  endif()
   # Add coverage target
   if(CMAKE_BUILD_TYPE STREQUAL "Coverage")
     find_program(GCOV_PATH gcov)
     find_program(LCOV_PATH lcov)
     find_program(GENHTML_PATH genhtml)
-    
-    if(GCOV_PATH AND LCOV_PATH AND GENHTML_PATH)
-      add_custom_target(coverage
+    if(GCOV_PATH
+       AND LCOV_PATH
+       AND GENHTML_PATH)
+      add_custom_target(
+        coverage
         # Cleanup previous coverage data
         COMMAND ${LCOV_PATH} --directory . --zerocounters
-        
         # Run tests to generate coverage data
         COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-        
         # Capture coverage data
         COMMAND ${LCOV_PATH} --directory . --capture --output-file coverage.info
-        
         # Remove external libraries and test files from coverage
-        COMMAND ${LCOV_PATH} --remove coverage.info 
-          '/usr/*' 
-          '*/build/*' 
-          '*/tests/*' 
-          '*/benchmarks/*' 
-          '*/examples/*' 
-          '*/_deps/*'
-          --output-file coverage.info.cleaned
-        
+        COMMAND
+          ${LCOV_PATH} --remove coverage.info '/usr/*' '*/build/*' '*/tests/*'
+          '*/benchmarks/*' '*/examples/*' '*/_deps/*' --output-file
+          coverage.info.cleaned
         # Generate HTML coverage report
         COMMAND ${GENHTML_PATH} -o coverage_html coverage.info.cleaned
-        
         # Output summary
         COMMAND ${LCOV_PATH} --list coverage.info.cleaned
-        
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         COMMENT "Generating coverage report"
         VERBATIM)
-      
-      message(STATUS "Coverage target available. Use 'make coverage' to generate reports.")
+      message(
+        STATUS
+          "Coverage target available. Use 'make coverage' to generate reports.")
     else()
       message(STATUS "Coverage tools not found. Coverage target not available.")
     endif()
@@ -187,17 +185,13 @@ endif()
 # Installation
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpticLibraryConfig.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/OpticLibraryConfig.cmake"
-    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/OpticLibrary"
-)
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpticLibraryConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/OpticLibraryConfig.cmake"
+  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/OpticLibrary")
 write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/OpticLibraryConfigVersion.cmake"
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
-)
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/OpticLibraryConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/OpticLibraryConfigVersion.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/OpticLibrary"
-)
+  "${CMAKE_CURRENT_BINARY_DIR}/OpticLibraryConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/OpticLibraryConfig.cmake"
+              "${CMAKE_CURRENT_BINARY_DIR}/OpticLibraryConfigVersion.cmake"
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/OpticLibrary")

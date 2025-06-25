@@ -69,7 +69,7 @@ EXPAND_ONLY_PREDEF     = YES
 CPP_CLI_SUPPORT        = NO
 
 # External references
-TAGFILES               = 
+TAGFILES               =
 GENERATE_TAGFILE       = @CMAKE_CURRENT_BINARY_DIR@/docs/opticlibrary.tag
 
 # Search engine

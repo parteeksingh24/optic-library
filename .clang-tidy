@@ -70,7 +70,6 @@ CheckOptions:
     value: CamelCase
   - key: readability-identifier-naming.ConceptCase
     value: CamelCase
-  
   # Modern C++ specific options
   - key: modernize-use-auto.MinTypeNameLength
     value: 5
@@ -86,7 +85,6 @@ CheckOptions:
     value: llvm
   - key: modernize-use-nullptr.NullMacros
     value: 'NULL'
-  
   # Performance options
   - key: performance-for-range-copy.WarnOnAllAutoCopies
     value: true
@@ -96,7 +94,6 @@ CheckOptions:
     value: true
   - key: performance-unnecessary-copy-initialization.AllowedTypes
     value: ''
-  
   # Readability options
   - key: readability-function-size.LineThreshold
     value: 100
@@ -110,7 +107,6 @@ CheckOptions:
     value: 5
   - key: readability-function-size.VariableThreshold
     value: 30
-  
   # C++ Core Guidelines specific
   - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
     value: true
@@ -120,7 +116,6 @@ CheckOptions:
     value: 'gsl/gsl'
   - key: cppcoreguidelines-pro-bounds-constant-array-index.IncludeStyle
     value: 'llvm'
-  
   # Misc options
   - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
     value: true
@@ -129,7 +124,7 @@ CheckOptions:
   - key: misc-const-correctness.TransformPointersAsValues
     value: false
 
-ExcludePaths: 
+ExcludePaths:
   - 'build/*'
   - 'external/*'
   - 'third_party/*'

@@ -67,13 +67,16 @@ If you'd like to get involved on a particular improvement or feature, here's how
 ## Development Guidelines
 
 ### Technical Requirements
+
 - C++23 compiler support required
 - All code must include comprehensive unit tests
 - Performance-critical implementations should include benchmarks
 - Documentation using Doxygen conventions
 
 ### Code Quality
+
 The project maintains high code quality standards using automated tooling:
+
 - **clang-format**: Automatic code formatting
 - **clang-tidy**: Static analysis and modern C++ checks
 - **pre-commit hooks**: Automated quality checks before commits
@@ -83,13 +86,16 @@ For detailed technical setup and development workflows, see [`DEVELOPMENT.md`](D
 ## What Makes a Good Contribution
 
 ### Data Structures and Algorithms
+
 This project focuses on advanced, educational implementations:
+
 - **Beyond Basic**: Implementations that go beyond typical CS curriculum
 - **Educational Value**: Clear documentation explaining algorithms and design choices
 - **Performance**: Efficient implementations with benchmarks comparing to standard library
 - **Modern C++**: Leverage C++23 features appropriately
 
 ### Examples of Valuable Contributions
+
 - Advanced data structures (HAT-tries, Fibonacci heaps, lock-free structures)
 - Optimized algorithms (cache-oblivious, parallel, streaming)
 - Performance improvements and benchmarks

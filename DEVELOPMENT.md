@@ -147,6 +147,7 @@ find . -name '*.cpp' -o -name '*.hpp' | xargs clang-format --dry-run --Werror
 ```
 
 Configuration in `.clang-format`:
+
 - C++23 standard
 - 4 spaces indentation
 - 100 character line length
@@ -168,6 +169,7 @@ clang-tidy -fix src/data_structures/hat_trie.cpp -- -std=c++23
 ```
 
 Configuration in `.clang-tidy`:
+
 - Modern C++ checks
 - Performance analysis
 - Readability improvements
@@ -192,6 +194,7 @@ git commit --no-verify -m "Emergency fix"
 ```
 
 Available hooks:
+
 - clang-format (formatting)
 - clang-tidy (static analysis)
 - cmake-format (CMake files)
@@ -225,7 +228,7 @@ cd build && ctest --timeout 30
 
 ### Test Organization
 
-```
+```text
 tests/
 ├── unit/           # Unit tests for individual components
 ├── integration/    # Integration tests
@@ -455,7 +458,7 @@ assert(index < container.size() && "Index out of bounds");
 
 ### Module Structure
 
-```
+```text
 optic-library/
 ├── data_structures/          # Data structure implementations
 │   ├── include/optic/data_structures/
@@ -557,12 +560,14 @@ git push origin feature/new-data-structure
 ### Common Build Issues
 
 **CMake version too old:**
+
 ```bash
 # Solution: Upgrade CMake
 brew upgrade cmake  # macOS
 ```
 
 **C++23 not supported:**
+
 ```bash
 # Check compiler version
 clang++ --version
@@ -572,6 +577,7 @@ g++ --version
 ```
 
 **Ninja not found:**
+
 ```bash
 # Solution: Install Ninja
 brew install ninja  # macOS
@@ -581,11 +587,13 @@ sudo apt install ninja-build  # Ubuntu
 ### Performance Issues
 
 **Slow compilation:**
+
 - Use Ninja instead of Make
 - Enable parallel builds: `cmake --build build --parallel`
 - Use precompiled headers for large projects
 
 **Runtime performance:**
+
 - Build with Release configuration
 - Profile with appropriate tools (perf, Instruments, Visual Studio Profiler)
 - Check for debug assertions in release builds

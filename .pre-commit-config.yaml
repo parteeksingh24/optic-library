@@ -4,7 +4,7 @@
 repos:
   # Built-in hooks for general file checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
         exclude: '\.md$'
@@ -38,12 +38,11 @@ repos:
     rev: v1.3.5
     hooks:
       - id: clang-tidy
-        args: 
+        args:
           - --checks=-*,readability-*,performance-*,modernize-*,bugprone-*,clang-analyzer-*
           - --header-filter=.*
         files: \.(cpp|cc|cxx)$
         exclude: ^(build/|_deps/|tests/.*test\.cpp$)
-        
   # Markdown formatting
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.41.0
