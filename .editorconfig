@@ -1,19 +1,80 @@
-# Root configuration file for project-wide settings
+# EditorConfig is awesome: https://EditorConfig.org
+
+# Top-most EditorConfig file
 root = true
 
-# Global settings for all files
+# All files
 [*]
-charset = utf-8                  # Character encoding
-end_of_line = lf                 # Line endings
-indent_size = 2                  # Indentation size
-indent_style = space             # Indentation style
-insert_final_newline = true      # Ensure newline at file end
-trim_trailing_whitespace = true  # Remove trailing whitespace
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
 
-# Markdown file-specific settings
+# C++ source files (match clang-format settings)
+[*.{cpp,cxx,cc,c,hpp,hxx,hh,h}]
+indent_style = space
+indent_size = 4
+max_line_length = 100
+
+# CMake files
+[{CMakeLists.txt,*.cmake}]
+indent_style = space
+indent_size = 2
+
+# Python files (for build scripts)
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+
+# YAML files (for CI/CD)
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown files
 [*.md]
-trim_trailing_whitespace = false # Preserve trailing whitespace
+indent_style = space
+indent_size = 2
+max_line_length = 80
+trim_trailing_whitespace = false
 
-# Makefile-specific settings
-[Makefile]
-indent_style = tab               # Use tabs for Makefiles
+# Shell scripts
+[*.{sh,bash}]
+indent_style = space
+indent_size = 2
+
+# Configuration files
+[*.{toml,ini,cfg}]
+indent_style = space
+indent_size = 2
+
+# Makefiles
+[{Makefile,*.mk}]
+indent_style = tab
+indent_size = 4
+
+# Git files
+[.git*]
+indent_style = space
+indent_size = 2
+
+# Package files
+[{package.json,*.lock}]
+indent_style = space
+indent_size = 2
+
+# Documentation files
+[*.{txt,rst}]
+indent_style = space
+indent_size = 2
+
+# XML files
+[*.xml]
+indent_style = space
+indent_size = 2

@@ -1,6 +1,94 @@
 ---
 Language: Cpp
 BasedOnStyle: Google
+Standard: c++23
+
+# Indentation and alignment
 IndentWidth: 4
 ColumnLimit: 100
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+
+# C++23 specific features
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveMacros: Consecutive
+AlignConsecutiveBitFields: Consecutive
+
+# Modern C++ formatting
+Cpp11BracedListStyle: true
+FixNamespaceComments: true
+SortIncludes: CaseSensitive
+SortUsingDeclarations: true
+
+# Concept and requires clause formatting
+IndentRequiresClause: true
+RequiresClausePosition: OwnLine
+IndentExternBlock: Indent
+
+# Range-based formatting
+SpacesInSquareBrackets: false
+SpaceBeforeSquareBrackets: false
+
+# Template and concept formatting
+AlwaysBreakTemplateDeclarations: Yes
+BreakBeforeConceptDeclarations: Always
+SpaceAfterTemplateKeyword: true
+
+# Modern brace wrapping
+BreakBeforeBraces: Attach
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: false
+  AfterUnion: false
+  AfterExternBlock: false
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeLambdaBody: false
+  BeforeWhile: false
+  IndentBraces: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+
+# Function and parameter formatting
+AlwaysBreakAfterReturnType: None
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLambdasOnASingleLine: All
+BinPackArguments: false
+BinPackParameters: false
+
+# Control flow formatting
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+
+# Spacing
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesInParentheses: false
+SpacesInAngles: Never
+SpaceBeforeRangeBasedForLoopColon: true
+
+# Comments
+ReflowComments: true
+SpacesBeforeTrailingComments: 2
+
+# Include sorting
+IncludeCategories:
+  - Regex: '^".*\.h"'
+    Priority: 1
+  - Regex: '^<optic/.*>'
+    Priority: 2
+  - Regex: '^<.*\.h>'
+    Priority: 3
+  - Regex: '^<.*>'
+    Priority: 4
 ---

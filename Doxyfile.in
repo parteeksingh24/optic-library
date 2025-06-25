@@ -8,7 +8,9 @@ PROJECT_BRIEF          = "A library of efficient data structures and algorithms"
 # Input files
 INPUT                  = @doxy_main_page@ \
                          @PROJECT_SOURCE_DIR@/algorithms/include \
-                         @PROJECT_SOURCE_DIR@/data_structures/include
+                         @PROJECT_SOURCE_DIR@/algorithms/examples \
+                         @PROJECT_SOURCE_DIR@/data_structures/include \
+                         @PROJECT_SOURCE_DIR@/data_structures/examples
 FILE_PATTERNS          = *.h \
                          *.hpp \
                          *.cpp
@@ -30,6 +32,7 @@ EXTRACT_PRIVATE        = YES
 EXTRACT_STATIC         = YES
 EXTRACT_PACKAGE        = YES
 EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_LOCAL_METHODS  = YES
 
 # Diagram and graph settings
 HAVE_DOT               = YES
@@ -41,6 +44,12 @@ CALLER_GRAPH           = YES
 ALIASES                += "requirements=\xrefitem requirements \"Requirement\" \"Requirements\""
 ALIASES                += "algorithm=\xrefitem algorithms \"Algorithm\" \"Algorithms\""
 ALIASES                += "datastructure=\xrefitem datastructures \"Data Structure\" \"Data Structures\""
+ALIASES                += "complexity=\xrefitem complexity \"Time/Space Complexity\" \"Complexity Analysis\""
+ALIASES                += "threadsafe=\xrefitem threadsafe \"Thread Safety\" \"Thread Safety\""
+ALIASES                += "lockfree=\xrefitem lockfree \"Lock-Free\" \"Lock-Free Operations\""
+ALIASES                += "cachefriendly=\xrefitem cachefriendly \"Cache-Friendly\" \"Cache-Friendly Operations\""
+ALIASES                += "concept=\xrefitem concept \"C++23 Concept\" \"C++23 Concepts\""
+ALIASES                += "module=\xrefitem module \"C++23 Module\" \"C++23 Modules\""
 
 # Source browsing
 SOURCE_BROWSER         = YES
@@ -55,6 +64,9 @@ SORT_MEMBERS_CTORS_1ST = YES
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
+
+# C++23 specific settings
+CPP_CLI_SUPPORT        = NO
 
 # External references
 TAGFILES               = 

@@ -16,6 +16,9 @@ if(SRC_FILES)
             ${CMAKE_CURRENT_SOURCE_DIR}/src
     )
 
+    # Specify C++23 feature requirements
+    target_compile_features(optic_algorithms PUBLIC cxx_std_23)
+
     # Specify installation targets
     install(TARGETS optic_algorithms
         EXPORT OpticAlgorithmsTargets

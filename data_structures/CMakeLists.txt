@@ -1,6 +1,7 @@
 # Collect all source files in the src directory
-set(SRC_FILES
-    # Source files to be added here
+file(GLOB_RECURSE SRC_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx"
 )
 
 if(SRC_FILES)
@@ -15,6 +16,9 @@ if(SRC_FILES)
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
     )
+
+    # Specify C++23 feature requirements
+    target_compile_features(optic_data_structures PUBLIC cxx_std_23)
 
     # Specify installation targets
     install(TARGETS optic_data_structures

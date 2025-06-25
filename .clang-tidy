@@ -1,22 +1,137 @@
-Checks: 'clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,bugprone-*,performance-*,readability-*,misc-*'
-WarningsAsErrors: ''
-HeaderFilterRegex: ''
-AnalyzeTemporaryDtors: false
+Checks: >
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  modernize-*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  misc-*,
+  concurrency-*,
+  portability-*,
+  -modernize-use-trailing-return-type,
+  -readability-braces-around-statements,
+  -readability-magic-numbers,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -misc-non-private-member-variables-in-classes
+
+# C++23 and modern C++ specific checks
+WarningsAsErrors: >
+  clang-diagnostic-*,
+  bugprone-*,
+  performance-*,
+  cppcoreguidelines-pro-*
+
+HeaderFilterRegex: '(include/optic|src)/.*\.(h|hpp)$'
+AnalyzeTemporaryDtors: true
 FormatStyle: file
+
 CheckOptions:
+  # Naming conventions
   - key: readability-identifier-naming.NamespaceCase
     value: lower_case
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
   - key: readability-identifier-naming.StructCase
     value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: kCamelCase
   - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.MethodCase
     value: camelBack
   - key: readability-identifier-naming.VariableCase
     value: lower_case
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case
+  - key: readability-identifier-naming.MemberCase
+    value: lower_case
+  - key: readability-identifier-naming.MemberSuffix
+    value: _
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: _
+  - key: readability-identifier-naming.ProtectedMemberSuffix
+    value: _
   - key: readability-identifier-naming.GlobalConstantCase
-    value: UPPER_CASE
+    value: kCamelCase
+  - key: readability-identifier-naming.GlobalConstantPrefix
+    value: k
+  - key: readability-identifier-naming.StaticConstantCase
+    value: kCamelCase
+  - key: readability-identifier-naming.StaticConstantPrefix
+    value: k
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: kCamelCase
+  - key: readability-identifier-naming.ConstexprVariablePrefix
+    value: k
+  - key: readability-identifier-naming.TemplateParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConceptCase
+    value: CamelCase
+  
+  # Modern C++ specific options
+  - key: modernize-use-auto.MinTypeNameLength
+    value: 5
+  - key: modernize-use-auto.RemoveStars
+    value: true
+  - key: modernize-loop-convert.MaxCopySize
+    value: 16
+  - key: modernize-loop-convert.MinConfidence
+    value: reasonable
+  - key: modernize-pass-by-value.IncludeStyle
+    value: llvm
+  - key: modernize-replace-auto-ptr.IncludeStyle
+    value: llvm
+  - key: modernize-use-nullptr.NullMacros
+    value: 'NULL'
+  
+  # Performance options
+  - key: performance-for-range-copy.WarnOnAllAutoCopies
+    value: true
+  - key: performance-inefficient-vector-operation.EnableProto
+    value: false
+  - key: performance-move-const-arg.CheckTriviallyCopyableMove
+    value: true
+  - key: performance-unnecessary-copy-initialization.AllowedTypes
+    value: ''
+  
+  # Readability options
+  - key: readability-function-size.LineThreshold
+    value: 100
+  - key: readability-function-size.StatementThreshold
+    value: 80
+  - key: readability-function-size.BranchThreshold
+    value: 10
+  - key: readability-function-size.ParameterThreshold
+    value: 8
+  - key: readability-function-size.NestingThreshold
+    value: 5
+  - key: readability-function-size.VariableThreshold
+    value: 30
+  
+  # C++ Core Guidelines specific
+  - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: true
+  - key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctions
+    value: false
+  - key: cppcoreguidelines-pro-bounds-constant-array-index.GslHeader
+    value: 'gsl/gsl'
+  - key: cppcoreguidelines-pro-bounds-constant-array-index.IncludeStyle
+    value: 'llvm'
+  
+  # Misc options
+  - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value: true
+  - key: misc-const-correctness.WarnPointersAsValues
+    value: false
+  - key: misc-const-correctness.TransformPointersAsValues
+    value: false
+
 ExcludePaths: 
   - 'build/*'
   - 'external/*'
   - 'third_party/*'
+  - 'cmake/*'
+  - '_deps/*'
