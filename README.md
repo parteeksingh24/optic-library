@@ -22,8 +22,9 @@ Both the `data_structures` and `algorithms` modules contain the same overall com
 ## Getting Started
 
 ### Prerequisites
-- **CMake**: This project uses CMake as the build system. Ensure that you have CMake (version 3.10 or higher) installed on your system.
-- **Compiler**: A C++ compiler supporting at least C++17 (such as `g++`, `clang`, or MSVC).
+- **CMake**: This project uses CMake as the build system. Ensure that you have CMake (version 3.21 or higher) installed on your system.
+- **Compiler**: A C++ compiler supporting C++23 (such as `g++`, `clang`, or MSVC).
+- **Ninja** (optional but recommended): For optimized build performance.
 - **Dependencies**: The project uses GoogleTest and Google Benchmark for unit tests and benchmarking. CMake will handle fetching and configuring these libraries automatically.
 
 ### Building the Project
@@ -39,15 +40,21 @@ Both the `data_structures` and `algorithms` modules contain the same overall com
     mkdir build && cd build
     cmake ..
     ```
+    
+    For optimal build performance, use Ninja (if installed):
+    ```bash
+    cmake -B build -G Ninja
+    ```
 
 3. Build the project:
     ```bash
-    cmake --build .
+    cmake --build build
     ```
 
 4. Run the tests:
     ```bash
-    ctest
+    cd build
+    ctest --output-on-failure
     ```
 
 ### Usage

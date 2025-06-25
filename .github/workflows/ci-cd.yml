@@ -82,34 +82,35 @@ jobs:
 
     - name: Install dependencies (Ubuntu)
       if: runner.os == 'Linux'
-      # Install CMake and compilers
+      # Install CMake, compilers, and Ninja for optimized builds
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake gcc g++ clang
+        sudo apt-get install -y cmake gcc g++ clang ninja-build
 
     - name: Install dependencies (macOS)
       if: runner.os == 'macOS'
-      # Install CMake on macOS using Homebrew
+      # Install CMake and Ninja on macOS using Homebrew
       run: |
-        brew install cmake
+        brew install cmake ninja
 
     - name: Install dependencies (Windows)
       if: runner.os == 'Windows'
-      # Install CMake (using Chocolatey) and Visual Studio Build Tools on Windows  
+      # Install CMake, Ninja, and Visual Studio Build Tools on Windows  
       run: |
-        choco install cmake
+        choco install cmake ninja
         choco install visualstudio2022buildtools
 
     - name: Configure CMake
-      # Configure the build using CMake in the 'build' subdirectory
+      # Configure the build using CMake with Ninja generator for optimal performance
       # Using matrix variables to set the compilers and build type for each job
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -G Ninja
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DBUILD_TESTS=ON  # Optionally configure to build tests
-        -DBUILD_BENCHMARKS=ON  # Optionally configure to build benchmarks
+        -DBUILD_TESTS=ON
+        -DBUILD_BENCHMARKS=ON
         -S ${{ github.workspace }}
 
     - name: Build
@@ -140,12 +141,121 @@ jobs:
       - name: Run Clang-Tidy
         # Run Clang-Tidy for static analysis on all .cpp, .hpp, and .h files
         run: |
-          find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' | xargs -I {} clang-tidy {} -- -std=c++17
+          find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' | xargs -I {} clang-tidy {} -- -std=c++23
 
       - name: Run Clang-Format
         # Check code formatting using Clang-Format and ensure no changes are needed
         run: |
           find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' | xargs clang-format -i --dry-run --Werror
+
+  # Coverage analysis job
+  coverage:
+    needs: check_source_files
+    if: needs.check_source_files.outputs.has_source_files == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake gcc g++ ninja-build lcov
+
+      - name: Configure CMake for Coverage
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Coverage
+          -DBUILD_TESTS=ON
+          -DBUILD_BENCHMARKS=OFF
+
+      - name: Build with Coverage
+        run: cmake --build build
+
+      - name: Run Tests with Coverage
+        working-directory: build
+        run: cmake --build . --target coverage
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: build/coverage.info.cleaned
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+          verbose: true
+
+  # Documentation generation job
+  documentation:
+    needs: check_source_files
+    if: needs.check_source_files.outputs.has_source_files == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake doxygen graphviz
+
+      - name: Configure CMake
+        run: cmake -B build -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF
+
+      - name: Generate Documentation
+        run: cmake --build build --target doc_doxygen
+
+      - name: Deploy Documentation
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/docs/api
+
+  # Sanitizer testing jobs
+  sanitizer-tests:
+    needs: check_source_files
+    if: needs.check_source_files.outputs.has_source_files == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sanitizer: [address, undefined]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake gcc g++ ninja-build
+
+      - name: Configure CMake with ${{ matrix.sanitizer }} sanitizer
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DENABLE_SANITIZER_$(echo ${{ matrix.sanitizer }} | tr '[:lower:]' '[:upper:]')=ON
+          -DBUILD_TESTS=ON
+          -DBUILD_BENCHMARKS=OFF
+
+      - name: Build with sanitizer
+        run: cmake --build build
+
+      - name: Run tests with sanitizer
+        working-directory: build
+        run: ctest --output-on-failure
+
+  # Pre-commit verification job
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit hooks
+        run: pre-commit run --all-files
 
   # Job to notify if no source files are found
   no_source_files:
