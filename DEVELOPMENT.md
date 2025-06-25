@@ -129,6 +129,20 @@ cmake -B build -G Ninja \
   -DCMAKE_TOOLCHAIN_FILE=path/to/toolchain.cmake
 ```
 
+### Important CMake Notes
+
+**Adding New Source Files**: When adding new source files (`.cpp`, `.hpp`, `.h`), you must re-run the CMake configuration step because the project uses `file(GLOB)` for source discovery. CMake doesn't automatically detect new files added after the initial configuration.
+
+```bash
+# After adding new source files, reconfigure:
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+
+# Then build as usual:
+cmake --build build
+```
+
+This is a trade-off for build system simplicity - while `file(GLOB)` makes the CMake files cleaner, it requires manual reconfiguration when the file structure changes.
+
 ## Development Tools
 
 ### clang-format

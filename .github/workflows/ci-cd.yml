@@ -8,6 +8,10 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+# Global permissions - principle of least privilege
+permissions:
+  contents: read
+
 # Jobs to be executed
 jobs:
   check_source_files:
@@ -72,6 +76,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4  # Checkout the code from the repository
+
+    # Layer 2: Setup ccache for C++ compilation optimization
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ runner.os }}-${{ matrix.cpp_compiler }}-ccache-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-${{ matrix.cpp_compiler }}-ccache-
+
+    # Layer 1: Cache FetchContent dependencies (GoogleTest, Benchmark)
+    - name: Cache C++ Dependencies
+      uses: actions/cache@v4
+      with:
+        path: build/_deps
+        key: ${{ runner.os }}-deps-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: ${{ runner.os }}-deps-
 
     - name: Set reusable strings
       # Create reusable variables (like the build output directory) to avoid repeating them in different steps
@@ -156,6 +175,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Layer 2: Setup ccache for C++ compilation optimization
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-ccache-coverage-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-ccache-coverage-
+
+      # Layer 1: Cache FetchContent dependencies (GoogleTest, Benchmark)
+      - name: Cache C++ Dependencies
+        uses: actions/cache@v4
+        with:
+          path: build/_deps
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: ${{ runner.os }}-deps-
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -188,8 +222,18 @@ jobs:
     needs: check_source_files
     if: needs.check_source_files.outputs.has_source_files == 'true'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for deploying to GitHub Pages
     steps:
       - uses: actions/checkout@v4
+
+      # Layer 1: Cache FetchContent dependencies (GoogleTest, Benchmark)
+      - name: Cache C++ Dependencies
+        uses: actions/cache@v4
+        with:
+          path: build/_deps
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: ${{ runner.os }}-deps-
 
       - name: Install dependencies
         run: |
@@ -203,7 +247,7 @@ jobs:
         run: cmake --build build --target doc_doxygen
 
       - name: Deploy Documentation
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -219,6 +263,21 @@ jobs:
         sanitizer: [address, undefined]
     steps:
       - uses: actions/checkout@v4
+
+      # Layer 2: Setup ccache for C++ compilation optimization
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ runner.os }}-ccache-${{ matrix.sanitizer }}-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-ccache-${{ matrix.sanitizer }}-
+
+      # Layer 1: Cache FetchContent dependencies (GoogleTest, Benchmark)
+      - name: Cache C++ Dependencies
+        uses: actions/cache@v4
+        with:
+          path: build/_deps
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: ${{ runner.os }}-deps-
 
       - name: Install dependencies
         run: |
@@ -247,7 +306,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
